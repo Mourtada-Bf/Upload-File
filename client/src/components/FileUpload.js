@@ -25,9 +25,11 @@ const FileUpload = () => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-        onUpload: (ProgressEvent) => {
+        onUploadProgress: (ProgressEvent) => {
           setUploadPercentage(
-            parseInt(Math.round((ProgressEvent.loaded * 100) / ProgressEvent))
+            parseInt(
+              Math.round((ProgressEvent.loaded * 100) / ProgressEvent.total)
+            )
           );
 
           //Clear Percentage
@@ -41,18 +43,18 @@ const FileUpload = () => {
       setMessage("File Uploaded");
     } catch (err) {
       if (err.response.status === 500) {
-        setMessage("There was a problem with the server");
+        setMessage("There was a problem with the server !");
       } else {
-        //setMessage(err.response.data.msg);
+        setMessage(err.response.data.msg);
       }
     }
   };
 
   return (
     <Fragment>
-      {message ? <Message msg={message} /> : <Message msg={message} />}
+      {message ? <Message msg={message} /> : undefined}
       <form onSubmit={onSubmit}>
-        <div class="custom-file mt-4">
+        <div className="custom-file mt-4">
           <input
             type="file"
             className="custom-file-input"
@@ -80,7 +82,9 @@ const FileUpload = () => {
       {uploadedFile ? (
         <div className="row mt-5">
           <div className="col-md-6-auto">
-            <h3 className="text-center">{uploadedFile.fileName}</h3>
+            <h5 className="display-10 text-center mb-4">
+              File name: {uploadedFile.fileName}
+            </h5>
           </div>
         </div>
       ) : null}
